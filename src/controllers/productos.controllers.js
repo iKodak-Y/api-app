@@ -16,7 +16,7 @@ export const getProductosID = async (req,res)=>{
             det_id : 0,
             message : "Producto no encontrado"
         })
-        res.json(result[0])
+        res.json(result[0]) 
     } catch (error) {
         return res.status(500).json({message:" error en el servidor"})
     }
