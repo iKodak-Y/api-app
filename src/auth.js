@@ -12,58 +12,12 @@ export const generarToken = (usuario) => {
 };
 
 export const verificarToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  console.log("Authorization header:", authHeader);
-
-  if (!authHeader) {
-    return res
-      .status(401)
-      .json({ message: "No se proporcionó header de autorización" });
-  }
-
-  const token = authHeader.split(" ")[1];
-  console.log("Token extraído:", token);
-
-  if (!token) {
-    return res
-      .status(401)
-      .json({ message: "No se proporcionó token en el formato correcto" });
-  }
+  const token = req.headers["authorization"]?.split(" ")[1];
+  if (!token)
+    return res.status(401).json({ message: "No se proporcionó token" });
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) {
-      console.error("Error verificando token:", err);
-      return res
-        .status(401)
-        .json({ message: "Token inválido", error: err.message });
-    }
-    console.log("Token verificado correctamente:", decoded);
-    req.user = decoded;
-    next();
-  });
-};
-
-// Middleware opcional - permite acceso sin token
-export const verificarTokenOpcional = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-
-  if (!authHeader) {
-    console.log("Sin token - acceso como usuario anónimo");
-    return next();
-  }
-
-  const token = authHeader.split(" ")[1];
-
-  if (!token) {
-    console.log("Header mal formateado - acceso como usuario anónimo");
-    return next();
-  }
-
-  jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if (err) {
-      console.log("Token inválido - acceso como usuario anónimo");
-      return next();
-    }
+    if (err) return res.status(401).json({ message: "Token inválido" });
     req.user = decoded;
     next();
   });
@@ -73,12 +27,14 @@ export const login = async (req, res) => {
   try {
     console.log("Datos recibidos:", req.body);
 
+    // Verificar que los datos no estén vacíos
     if (!req.body || !req.body.usr_usuario || !req.body.usr_clave) {
       return res.status(400).json({ message: "Datos incompletos" });
     }
 
     const { usr_usuario, usr_clave } = req.body;
 
+    // Primero, buscamos solo por usuario para verificar si existe
     const [checkUser] = await conmysql.query(
       "SELECT * FROM usuarios WHERE usr_usuario = ?",
       [usr_usuario]
@@ -90,6 +46,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: "Usuario no encontrado" });
     }
 
+    // Luego verificamos la contraseña
     const [result] = await conmysql.query(
       "SELECT * FROM usuarios WHERE usr_usuario = ? AND usr_clave = ?",
       [usr_usuario, usr_clave]
@@ -97,12 +54,10 @@ export const login = async (req, res) => {
 
     console.log("Autenticación exitosa:", result.length > 0);
 
-    if (result.length === 0) {
+    if (result.length === 0)
       return res.status(401).json({ message: "Contraseña incorrecta" });
-    }
 
     const token = generarToken(result[0]);
-    console.log("Token generado:", token);
     res.json({ token });
   } catch (error) {
     console.error("Error en login:", error);
