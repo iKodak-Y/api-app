@@ -7,16 +7,14 @@ import {
   patchCliente,
   deleteCliente,
 } from "../controllers/clientes.controllers.js";
-import { verificarToken } from "../auth.js";
 
 const router = Router();
 
-// Aplicar verificarToken a las rutas que necesiten autenticación
-router.get("/cliente", verificarToken, getClientes);
-router.get("/cliente/:id", verificarToken, getCliente);
-router.post("/cliente", verificarToken, postCliente);
-router.put("/cliente/:id", verificarToken, putCliente);
-router.patch("/cliente/:id", verificarToken, patchCliente);
-router.delete("/cliente/:id", verificarToken, deleteCliente);
+router.get("/cliente", getClientes);
+router.get("/cliente/:id", getCliente);
+router.post("/cliente", postCliente);
+router.put("/cliente/:id", putCliente);
+router.patch("/cliente/:id", patchCliente);
+router.delete("/cliente/:id", deleteCliente);
 
 export default router;
