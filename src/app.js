@@ -17,17 +17,11 @@ const __dirname = path.dirname(__filename);
 
 //definir los permisos de CORS - CORREGIDO
 const corsOptions = {
-  origin: [
-    "http://localhost:8100",
-    "http://192.168.1.12:8100",
-    "http://localhost", // <--- AÑADE ESTA LÍNEA
-    "capacitor://localhost", // <--- AÑADE ESTA LÍNEA (común para Capacitor en Android/iOS)
-    // También podrías considerar "ionic://localhost" si usas Ionic-native en algunos casos
-  ],
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  //credentials: true,
-  maxAge: 86400,
+  origin: '*' /* ["http://localhost:8100", "http://192.168.1.12:8100"] */, // Permite tu aplicación Ionic
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Añadido OPTIONS para preflight
+  allowedHeaders: ["Content-Type", "Authorization"], // Añadido Authorization para tu JWT
+  //credentials: true, // Permite credenciales
+  maxAge: 86400, // Caché de preflight por 24 horas
 };
 
 const app = express();
