@@ -25,7 +25,10 @@ export const verificarToken = (req, res, next) => {
 
 export const login = async (req, res) => {
   try {
-    console.log("Datos recibidos:", req.body);
+    console.log("Intento de login recibido.");
+    console.log("Origen de la solicitud:", req.headers.origin); // Muy importante
+    console.log("Headers completos:", JSON.stringify(req.headers, null, 2));
+    console.log("Cuerpo de la solicitud (body):", req.body);
 
     // Verificar que los datos no estén vacíos
     if (!req.body || !req.body.usr_usuario || !req.body.usr_clave) {
