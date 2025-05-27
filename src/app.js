@@ -15,8 +15,6 @@ import usuariosRoutes from "./routes/usuarios.routes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-const cors = require('cors');
 const allowedOrigins = [
   'capacitor://localhost',
   'ionic://localhost', // Otro posible scheme para Ionic
