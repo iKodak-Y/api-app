@@ -16,11 +16,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const allowedOrigins = [
-  'capacitor://localhost',
-  'ionic://localhost', // Otro posible scheme para Ionic
-  'http://localhost',
-  'http://localhost:8100', // Para ionic serve con live reload
-  'https://api-app-x596.onrender.com' // Si tu frontend PWA se sirve desde el mismo dominio o quieres permitirlo
+  "capacitor://localhost",
+  "ionic://localhost",
+  "http://localhost",
+  "https://localhost",
+  "http://localhost:8100", // Para ionic serve con live reload
+  "https://api-app-x596.onrender.com", // Si tu frontend PWA se sirve desde el mismo dominio o quieres permitirlo
   // Añade aquí el dominio de tu app web desplegada si es diferente
 ];
 
@@ -39,13 +40,16 @@ const corsOptions = {
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      // Este log es útil para depurar, lo puedes dejar o quitar una vez funcione
+      console.warn(
+        `ADVERTENCIA CORS: El origen ${origin} fue bloqueado. Si es un origen válido, añádelo a allowedOrigins.`
+      );
       callback(new Error(`El origen ${origin} no está permitido por CORS`));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // Asegúrate de incluir todos los métodos que usas
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'], // Añade cualquier cabecera personalizada que uses
-  credentials: true // Si planeas usar cookies o sesiones a través de dominios (requiere Access-Control-Allow-Origin no sea '*')
-                  // Si pones credentials: true, el origin no puede ser '*' tiene que ser específico.
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  credentials: true,
 };
 
 const app = express();
@@ -68,8 +72,8 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.message.includes('no está permitido por CORS')) {
-    console.error('Error de CORS:', err.message);
+  if (err.message.includes("no está permitido por CORS")) {
+    console.error("Error de CORS:", err.message);
     return res.status(403).json({ message: err.message });
   }
   next(err);
