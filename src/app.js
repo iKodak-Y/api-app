@@ -53,7 +53,7 @@ const corsOptions = {
 };
 
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json()); //interpreta objetos json
 app.use(express.urlencoded({ extended: true })); //se añade para poder reseptar formularios
 app.use("/uploads", express.static(path.join(__dirname, "../uploads"))); //direccion donde se guarda
