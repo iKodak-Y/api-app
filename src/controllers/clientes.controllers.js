@@ -32,6 +32,27 @@ export const getCliente = async (req, res) => {
   }
 };
 
+// Obtener cliente por CI
+export const getClientexCI = async (req, res) => {
+  try {
+    // const {id} = req.params.id;
+    const [result] = await conmysql.query(
+      `SELECT * FROM clientes WHERE cli_identificacion = ?`,
+      [req.params.cli_identificacion]
+    );
+    if (result.length <= 0)
+      return res.status(404).json({
+        cli_identificacion: 0,
+        message: "No existe el cliente",
+      });
+    res.json(result[0]);
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error en el servidor",
+    });
+  }
+};
+
 // Funcion para insertar un cliente
 export const postCliente = async (req, res) => {
   try {
@@ -123,7 +144,7 @@ export const patchCliente = async (req, res) => {
       cli_direccion,
       cli_pais,
       cli_ciudad,
-      cli_estado
+      cli_estado,
     } = req.body;
 
     const [result] = await conmysql.query(
